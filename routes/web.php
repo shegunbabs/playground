@@ -14,13 +14,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/list', function () {
     return view('welcome');
 });
 
-Route::prefix("/best-western")->group(function(){
-    Route::view('landing', 'bestwestern/landing');
+if ( app()->environment('local') ) {
+    $domain = "playground.test";
+}
+if ( app()->environment('production') ) {
+    $domain = "landing.bestwesternhospital.com";
+}
+
+
+
+Route::domain($domain)->group(function(){
+    Route::view('/', 'bestwestern/landing')->name("bw.landing");
 });
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
