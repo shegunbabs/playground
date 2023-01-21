@@ -31,4 +31,12 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    "best-western" => [
+        "name" => "BestWestern Hospital"
+    ],
+
+    "capital-sage" => [
+
+    ]
+
 ];
