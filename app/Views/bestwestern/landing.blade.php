@@ -4,12 +4,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="keywords" content="your, tags"/>
-    <meta name="description" content="150 words"/>
-    <meta name="copyright" content="company name">
+    <meta name="keywords" content="Pledge to health, healthy living"/>
+    <meta name="description" content="Pledge to Health Challenge"/>
+    <meta name="copyright" content="Best Western Hospital">
     <meta name="robots" content="index,follow"/>
-    <meta name="author" content="name, email@hotmail.com">
-    <meta name="designer" content="">
+    <meta name="author" content="shegunbabs, shegunbabs@gmail.com">
     <link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
