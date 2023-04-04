@@ -1,5 +1,6 @@
 <?php
 
+use App\Domain\CapitalSageAcademy\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,23 +15,61 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/list', function () {
-    return view('welcome');
+Route::get('/', function () {
+    $appList = [
+        [
+            "title" => "Tutor Demo for JetBrains License",
+            "description" => "Full website for Capitalsage Tech School",
+            "href" => \route("academy.home"),
+        ],
+        [
+            "title" => "Merge institution & Bank Codes",
+            "description" => "Method to merge Institution & Bank Codes",
+            "href" => "/process-bank-codes",
+        ],
+    ];
+    return view('welcome', ["appList" => $appList]);
 });
 
-if ( app()->environment('local') ) {
-    $domain = "playground.test";
-}
-if ( app()->environment('production') ) {
-    $domain = "landing.bestwesternhospital.com";
-}
-
-
-
-Route::domain($domain)->group(function(){
-    Route::view('/', 'bestwestern/landing')->name("bw.landing");
+Route::prefix("capitalsage-academy")->group(function(){
+    Route::get("/", HomeController::class)->name('academy.home');
 });
 
+Route::get("process-bank-codes", function(){
+
+    $filePath = storage_path("app/public/banks.csv");
+    $file = new SplFileObject($filePath, "c");
+
+    foreach(readNibssInstitutionCodeCsv() as $institutionRow) {
+        if ( count($institutionRow) && strlen($institutionRow[0]) === 6 ) {
+
+            $foundMatch = false;
+
+            foreach (banksGenerator() as $item2) {
+                //000001,Xyz Bank,034
+                //institution_code,bank_name,bank_code
+                if ( !empty($item2->alias) && strtolower(trim($institutionRow[1])) === strtolower(trim($item2->alias)) )
+                {
+                    $file->fwrite("{$institutionRow[0]},{$item2->cbn_code},{$institutionRow[1]}".PHP_EOL);
+                    $foundMatch = true;
+                    break;
+                }
+
+                if ( strtolower(trim($institutionRow[1])) === strtolower(trim($item2->bank_name)) )
+                {
+                    $file->fwrite("{$institutionRow[0]},{$item2->cbn_code},{$institutionRow[1]}".PHP_EOL);
+                    $foundMatch = true;
+                    break;
+                }
+            }
+
+            if (! $foundMatch ) {
+                $file->fwrite("{$institutionRow[0]},,{$institutionRow[1]}".PHP_EOL);
+            }
+        }
+    }
+    echo "done";
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
