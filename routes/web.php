@@ -1,97 +1,84 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Domain\CapitalSageAcademy\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use phpseclib3\Crypt\PublicKeyLoader;
-use phpseclib3\Crypt\RSA;
 
-Route::get('/', function (Request $request) {
-    return response()->json([
-        "clientIp" => $request->getClientIp(),
-        "clientIps" => $request->getClientIps(),
-        "ip" => $request->ip(),
-        "ips" => $request->ips(),
-    ]);
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::get('/', function () {
+    $appList = [
+        [
+            "title" => "Tutor Demo for JetBrains License",
+            "description" => "Full website for Capitalsage Tech School",
+            "href" => \route("academy.home"),
+        ],
+        [
+            "title" => "Merge institution & Bank Codes",
+            "description" => "Method to merge Institution & Bank Codes",
+            "href" => "/process-bank-codes",
+        ],
+    ];
+    return view('welcome', ["appList" => $appList]);
 });
 
-Route::get("rsa", function (Request $request)
-{
-    $privateKey = <<<ABC
------BEGIN PRIVATE KEY-----
-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
-oOSwtqEg8+/QddBH30pCWrVVouxV
------END PRIVATE KEY-----
-ABC;
-
-    $publicKey = <<<BEC
------BEGIN PUBLIC KEY-----
-MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAuHnDPowC3S6dM+QiYaMN
-FHzaulzxTj5PVLcjoVM7a2emnij8cw7ZX7TMfTVbwtwjSgStv89/qfwzepOrSswh
-0lDVbkSqXjbzaGqp7HSUM7ZFPpT3f/lUS7YIjWn6rTVGAWui/DhmQf9OyXMfNPgE
-Fiq8GjnJ8x5k+h8MsbQteBV+k090sKMV+IEEzAjw8N0UjToGvCKoBFozD3qks/NT
-V0gQ3lIKC+Gqmu5vaNHbCWlJRBvnDZ1wfij8ADzNSHPNwOylbf5f/B1uzKYSL+su
-xpU6GBIU3w/NhFFliqITcSdfXsOrVArQbcoLki6fkkOb8C5y55cvRMkcseP0tLRV
-EJk2ZLQUQy7tJ2HtLWI541Dg2pfZR6UN/glPuyNrL64A7/Zgc+zW0o6s/x7jt4U5
-IaNTy0itRnBRxiMVWkqGPzBuaKnzYLRA8Yu0PsnQQ1e/1XlRQP6xJJGbUfcXIoZw
-iZGAwYH/of5P3YLqYi+ZBwp0fbQZ2VJ16LKysv83O2kanRl71II15/ns+klc77BG
-6h/32foYuolF8OrQCPW+DXAtTkiYATGO432GegzdbHb6zrEr4LzlTZfu1maNOvH4
-9Sb7A2i4VDqMRstYQHuCcBJ44N9eqICEz0fJMD3fqQfuyxNqn8rpdwzcvcuwdk8S
-eawHS2eZ6ncv3YMuAwRASG8CAwEAAQ==
------END PUBLIC KEY-----
-BEC;
-
-    $var = "XIAZzO/8p/MIkw9pyCxGSXOH8P25GZgDSEL0CxWUJ3mIFBgrOoRvGic2rWGa5DS1bJ3prFL1ZoEa0kE9ikIvS9lXr0IJ/44yTSQ1UMPri/IZqjHcwSUH2iP6P2dMIbDeqmM0ocjrgS5Ih60SMZSJGVp+kBJHdp3ys+2lirA0ISJH8SlgiHutNzPcwQvU2lEmwUDOvLy5TaoYCWzDPMiQzsTKcDIYVh5Q+OsYXt5/JgrgMNsV272qzc+xoy3lv9QfM5rzHnijKsuW5b8sGfw7seqbzw3VjP8XcyvKg6CzjpRxYZa7fiENO7zNyis5eWsCikC0vt9AiEo8uYbJyLT1ODSha2eBJVcSPa0CVrutTRIfzcA16dhdoc0cG74w/GApJl2WRKBeYquFfREKJ3Fy3q4DMQsDUdlqvWjEX1OCUyckSlWbfDg/9Aw5DimfsRXGrco4C52T/51feqej+hADmzRPyY6X51t1AfVed3Odz6V9SbMx4EybhDmNj87iEYBaxuaLNvINFu6qCdAvbeJjBZw5regA/ZOPXy1QwwB/8/HmQB8xlvTiqOgS0ZavWJJ27ZPBEkJcogdj3EySfBnmFy2HGDGB4Ia/sRutcRcqJO7bxbhyRlHABi05dEWfsc3yJFP/oMdzYMan73z9KeGZipi6E+hzcHyt4igrs70VPFs=";
-
-    $key = RSA::loadFormat("PKCS8", $privateKey);
-    //$key->withPadding(RSA::ENCRYPTION_PKCS1);
-    $key->withPadding(RSA::ENCRYPTION_OAEP);
-    echo $key->decrypt(base64_decode($var));
+Route::prefix("capitalsage-academy")->group(function(){
+    Route::get("/", HomeController::class)->name('academy.home');
 });
+
+Route::get("process-bank-codes", function(){
+
+    $filePath = storage_path("app/public/banks.csv");
+    $file = new SplFileObject($filePath, "c");
+
+    foreach(readNibssInstitutionCodeCsv() as $institutionRow) {
+        if ( count($institutionRow) && strlen($institutionRow[0]) === 6 ) {
+
+            $foundMatch = false;
+
+            foreach (banksGenerator() as $item2) {
+                //000001,Xyz Bank,034
+                //institution_code,bank_name,bank_code
+                if ( !empty($item2->alias) && strtolower(trim($institutionRow[1])) === strtolower(trim($item2->alias)) )
+                {
+                    $file->fwrite("{$institutionRow[0]},{$item2->cbn_code},{$institutionRow[1]}".PHP_EOL);
+                    $foundMatch = true;
+                    break;
+                }
+
+                if ( strtolower(trim($institutionRow[1])) === strtolower(trim($item2->bank_name)) )
+                {
+                    $file->fwrite("{$institutionRow[0]},{$item2->cbn_code},{$institutionRow[1]}".PHP_EOL);
+                    $foundMatch = true;
+                    break;
+                }
+            }
+
+            if (! $foundMatch ) {
+                $file->fwrite("{$institutionRow[0]},,{$institutionRow[1]}".PHP_EOL);
+            }
+        }
+    }
+    echo "done";
+});
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
