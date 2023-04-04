@@ -1,5 +1,6 @@
 <?php
 
+<<<<<<< Updated upstream
 use App\Domain\CapitalSageAcademy\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -82,3 +83,9 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+=======
+
+use App\Http\Controllers\TestController;
+
+Route::get('/', [TestController::class, "index"]);
+>>>>>>> Stashed changes
